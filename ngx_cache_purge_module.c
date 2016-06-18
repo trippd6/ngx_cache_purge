@@ -1472,7 +1472,7 @@ ngx_http_file_cache_purge(ngx_http_request_t *r)
         ngx_shmtx_unlock(&cache->shpool->mutex);
         return NGX_DECLINED;
     }
-
+/*
 #  if (nginx_version >= 1000001)
     cache->sh->size -= c->node->fs_size;
     c->node->fs_size = 0;
@@ -1486,15 +1486,19 @@ ngx_http_file_cache_purge(ngx_http_request_t *r)
        || ((nginx_version < 8000) && (nginx_version >= 7060))
     c->node->updating = 0;
 #  endif
-
+*/
+    c->node->valid = 0;
+    c->node->valid_msec = 0;
     ngx_shmtx_unlock(&cache->shpool->mutex);
 
+    ngx_http_file_cache_update_header(r);
+/*
     if (ngx_delete_file(c->file.name.data) == NGX_FILE_ERROR) {
         /* entry in error log is enough, don't notice client */
         ngx_log_error(NGX_LOG_CRIT, r->connection->log, ngx_errno,
                       ngx_delete_file_n " \"%s\" failed", c->file.name.data);
     }
-
+*/
     /* file deleted from cache */
     return NGX_OK;
 }
