@@ -5,7 +5,7 @@ About
 
 This is a modified version that expires the cache object rather then deletes it. This ensures that the stale content can be served to  clients while a new copy is being generated. Must use "proxy_cache_use_stale updating;" in your nginx config to see this improvement.
 
-Modified by Tripp Donnelly based on Frickle's original module. WARNING! I have no idea what I'm doing. But this works for me. Use at your own risk.
+Modified by Tripp Donnelly based on Frickle's original module. WARNING! This is not well tested. But this works for me. Use at your own risk.
 
 Sponsors
 ========
