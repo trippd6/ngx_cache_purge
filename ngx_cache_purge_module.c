@@ -1460,11 +1460,6 @@ ngx_http_file_cache_purge(ngx_http_request_t *r)
     c = r->cache;
     cache = c->file_cache;
 
-    /*
-     * delete file from disk but *keep* in-memory node,
-     * because other requests might still point to it.
-     */
-
     ngx_shmtx_lock(&cache->shpool->mutex);
 
     if (!c->node->exists) {
@@ -1487,19 +1482,14 @@ ngx_http_file_cache_purge(ngx_http_request_t *r)
     c->node->updating = 0;
 #  endif
 */
-    c->node->valid = 0;
-    c->node->valid_msec = 0;
+    c->valid_sec = 0;
+    c->node->valid_sec = 0;
+    
     ngx_shmtx_unlock(&cache->shpool->mutex);
 
     ngx_http_file_cache_update_header(r);
-/*
-    if (ngx_delete_file(c->file.name.data) == NGX_FILE_ERROR) {
-        /* entry in error log is enough, don't notice client */
-        ngx_log_error(NGX_LOG_CRIT, r->connection->log, ngx_errno,
-                      ngx_delete_file_n " \"%s\" failed", c->file.name.data);
-    }
-*/
-    /* file deleted from cache */
+
+    /* file expired from cache */
     return NGX_OK;
 }
 
